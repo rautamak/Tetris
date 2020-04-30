@@ -70,6 +70,17 @@ private:
      */
     void keyPressEvent(QKeyEvent* event);
     /**
+     * @brief paintEvent
+     * @param event
+     */
+    void draw();
+    /**
+     * @brief createBlock
+     * @param block_id
+     * Create a block with given id
+     */
+    void createBlock(int block_id);
+    /**
      * @brief drawGrid
      */
     void drawGrid();
@@ -84,11 +95,29 @@ private:
      */
     void game();
 
+    std::vector< std::vector< int > > current_;
+    int current_shape_;
+
+    struct tetromino_pos {
+        int x;
+        int y;
+    };
+
+    bool create_ = true;
+
+    // Whole game field, initialized with size COLUMNS*ROWS
+    // values:
+    //  0: empty
+    //  1: active tetromino
+    //  2..9: finished tetromino
+    std::vector< std::vector< int > > field_;
+
+    // ####
     std::vector< std::vector< int > > shape_1 = {
-        { 0, 0, 0, 0 },
-        { 0, 0, 0, 0 },
-        { 0, 0, 0, 0 },
-        { 1, 1, 1, 1 }
+        { 0, 0, 0, 1 },
+        { 0, 0, 0, 1 },
+        { 0, 0, 0, 1 },
+        { 0, 0, 0, 1 }
     };
 };
 

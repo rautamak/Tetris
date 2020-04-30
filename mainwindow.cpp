@@ -61,8 +61,76 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
     }*/
 }
 
-void MainWindow::gameloop() {
+void MainWindow::draw() {
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(2);
 
+    // Brushes
+    std::vector< QBrush > colours = {
+        QBrush(Qt::cyan),
+        QBrush(Qt::blue),
+        QBrush(QColor("orange")),
+        QBrush(Qt::yellow),
+        QBrush(Qt::green),
+        QBrush(Qt::magenta),
+        QBrush(Qt::red)
+    };
+
+    // Draw the field
+    for ( int x = 0; x < COLUMNS; ++x ) {
+        for ( int y = 0; y < ROWS; ++y ) {
+
+            if ( field_.at(x).at(y) == 0 ) {
+                continue;
+            } else if ( field_.at(x).at(y) == 1 ) {
+                //QGraphicsRectItem* square =
+                scene_->addRect(x*SQUARE_SIDE,
+                                y*SQUARE_SIDE,
+                                SQUARE_SIDE,
+                                SQUARE_SIDE,
+                                blackPen,
+                                colours.at(current_shape_));
+            } else if ( field_.at(x).at(y) >= 2 ) {
+                //QGraphicsRectItem* square =
+                scene_->addRect(x*SQUARE_SIDE,
+                                y*SQUARE_SIDE,
+                                SQUARE_SIDE,
+                                SQUARE_SIDE,
+                                blackPen,
+                                colours.at(4));
+            }
+        }
+    }
+}
+
+void MainWindow::createBlock(int tetromino) {
+    int start_x = 4;
+    int start_y = 0;
+
+    tetromino = HORIZONTAL;
+
+    switch (tetromino) {
+    case HORIZONTAL:
+        qDebug() << "create";
+
+        for ( int x = 0; x < 4; ++x ) {
+            for ( int y = 0; y < 4; ++y ) {
+                field_.at(start_x + x).at(start_y + y) = shape_1.at(x).at(y);
+                current_shape_ = tetromino;
+            }
+        }
+
+        break;
+    }
+}
+
+void MainWindow::gameloop() {
+    if ( create_ ) {
+        create_ = !create_;
+        int first = distr(randomEng);
+        createBlock(first);
+    }
+    draw();
 }
 
 void MainWindow::drawGrid() {
@@ -83,8 +151,10 @@ void MainWindow::drawGrid() {
 }
 
 void MainWindow::game() {
-
     drawGrid();
+
+    field_ = std::vector< std::vector< int > >
+            (COLUMNS, std::vector< int >(ROWS, 0));
 
     // Set up timer and start game loop
     timer_.setSingleShot(false);
