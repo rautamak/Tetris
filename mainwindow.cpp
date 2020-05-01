@@ -50,6 +50,10 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
         moveBlock(RIGHT);
     }
 
+    if ( event->key() == Qt::Key_Up || event->key() == Qt::Key_W ) {
+        rotateTetromino();
+    }
+
     if ( event->key() == Qt::Key_Space ) {
         //move_to_bottom();
     }
@@ -107,6 +111,24 @@ void MainWindow::draw() {
     }
 }
 
+void MainWindow::rotateTetromino() {
+    if ( current_ == nullptr ) return;
+
+    std::vector< std::vector< int > >* temp =
+            new std::vector< std::vector< int > >;
+    *temp = *current_;
+
+    for( int i = 0; i < 4; i++ ) {
+        for( int j = 0; j < 4; j++ ) {
+            temp->at(j).at(4 - i - 1) = current_->at(i).at(j);
+        }
+    }
+
+    current_ = temp;
+
+    draw();
+}
+
 void MainWindow::finishTetromino() {
     for ( int px = 0; px < 4; ++px ) {
         for ( int py = 0; py < 4; ++py ) {
@@ -144,20 +166,32 @@ int MainWindow::checkSpace(int d) {
     for ( int px = 0; px < 4; ++px ) {
         for ( int py = 0; py < 4; ++py ) {
             // Check for walls
-            if ( position_.at(px).at(py).x + dx >= COLUMNS || // Right wall
-                 position_.at(px).at(py).x + dx < 0 ) {       // Left wall
+            if ( (position_.at(px).at(py).x + dx >= COLUMNS || // Right wall
+                  position_.at(px).at(py).x + dx < 0) &&     // Left wall
+                  current_->at(px).at(py) == 1 ) {
 
-                return WALL;
+                    qDebug() << "wall";
+                    return WALL;
             }
 
-            if ( position_.at(px).at(py).y + dy >= ROWS ) {
+            if ( position_.at(px).at(py).y + dy >= ROWS &&
+                 field_.at(position_.at(px).at(py).x)
+                       .at(position_.at(px).at(py).y) == 1 ) {
+
+                qDebug() << "floor";
                 return FLOOR;
             }
 
             // Check for other blocks
-            if ( field_.at(position_.at(px).at(py).x + dx)
-                       .at(position_.at(px).at(py).y + dy) > 1 ) {
+            if ( (position_.at(px).at(py).x + dx > 0 &&
+                  position_.at(px).at(py).y + dy < COLUMNS) &&
 
+               ( field_.at(position_.at(px).at(py).x + dx)
+                       .at(position_.at(px).at(py).y + dy) > 1 ) &&
+
+                 current_->at(px).at(py) == 1 ) {
+
+                qDebug() << "tetromino";
                 return TETROMINO;
             }
         }
@@ -167,9 +201,7 @@ int MainWindow::checkSpace(int d) {
 }
 
 void MainWindow::moveBlock(int d) {
-    if ( current_ == nullptr ) {
-        return;
-    }
+    if ( current_ == nullptr ) return;
 
     // Default delty x and delta y
     int dx = 0;
@@ -190,6 +222,9 @@ void MainWindow::moveBlock(int d) {
     int status = checkSpace(d);
     switch ( status ) {
     case TETROMINO:
+        if ( d != DOWN ) {
+            return;
+        }
         finishTetromino();
         break;
     case WALL:

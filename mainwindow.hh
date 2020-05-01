@@ -76,6 +76,10 @@ private:
      */
     void draw();
     /**
+     * @brief rotateTetromino
+     */
+    void rotateTetromino();
+    /**
      * @brief finishTetromino
      * Move a tetromino to be part of the floor
      */
@@ -141,10 +145,10 @@ private:
 
     // ####
     std::vector< std::vector< int > > shape_1 = {
-        { 0, 0, 0, 1 },
-        { 0, 0, 0, 1 },
-        { 0, 0, 0, 1 },
-        { 0, 0, 0, 1 }
+        { 0, 0, 1, 0 },
+        { 0, 0, 1, 0 },
+        { 0, 0, 1, 0 },
+        { 0, 0, 1, 0 }
     };
 
     std::vector< QGraphicsRectItem* > graphics_;
