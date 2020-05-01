@@ -121,7 +121,7 @@ void MainWindow::finishTetromino() {
     //create_ = true;
     current_ = nullptr;
     createBlock(distr(randomEng));
-    if ( DEBUG ) qDebug() << "Tetromino finished " << current_shape_ + 2;
+    if ( DEBUG ) qDebug() << "Tetromino finished " << current_shape_;
 }
 
 int MainWindow::checkSpace(int d) {
@@ -158,7 +158,7 @@ int MainWindow::checkSpace(int d) {
             if ( field_.at(position_.at(px).at(py).x + dx)
                        .at(position_.at(px).at(py).y + dy) > 1 ) {
 
-                return false;
+                return TETROMINO;
             }
         }
     }
@@ -190,6 +190,8 @@ void MainWindow::moveBlock(int d) {
     int status = checkSpace(d);
     switch ( status ) {
     case TETROMINO:
+        finishTetromino();
+        break;
     case WALL:
         return;
         break;
