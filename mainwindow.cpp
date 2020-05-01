@@ -167,31 +167,30 @@ int MainWindow::checkSpace(int d) {
         for ( int py = 0; py < 4; ++py ) {
             // Check for walls
             if ( (position_.at(px).at(py).x + dx >= COLUMNS || // Right wall
-                  position_.at(px).at(py).x + dx < 0) &&     // Left wall
+                  position_.at(px).at(py).x + dx < 0) &&       // Left wall
                   current_->at(px).at(py) == 1 ) {
 
-                    qDebug() << "wall";
-                    return WALL;
+                if ( DEBUG ) qDebug() << "Movement blocked: wall";
+                return WALL;
             }
 
             if ( position_.at(px).at(py).y + dy >= ROWS &&
                  field_.at(position_.at(px).at(py).x)
                        .at(position_.at(px).at(py).y) == 1 ) {
 
-                qDebug() << "floor";
+                if ( DEBUG ) qDebug() << "Movement blocked: floor";
                 return FLOOR;
             }
 
             // Check for other blocks
             if ( (position_.at(px).at(py).x + dx > 0 &&
-                  position_.at(px).at(py).y + dy < COLUMNS) &&
+                  position_.at(px).at(py).x + dx < COLUMNS) &&
 
                ( field_.at(position_.at(px).at(py).x + dx)
                        .at(position_.at(px).at(py).y + dy) > 1 ) &&
-
                  current_->at(px).at(py) == 1 ) {
 
-                qDebug() << "tetromino";
+                if ( DEBUG ) qDebug() << "Movement blocked: tetromino";
                 return TETROMINO;
             }
         }
