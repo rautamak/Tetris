@@ -112,7 +112,6 @@ void MainWindow::moveBlock(int d) {
     int dx = 0;
     int dy = 0;
 
-
     switch ( d ) {
     case LEFT:
         dx = -1;
@@ -161,47 +160,9 @@ void MainWindow::moveBlock(int d) {
             }
         }
     }
-}
 
-void MainWindow::gravity() {
-    int dy = 1;
-
-    // Move each piece's coordinates
-    for ( int px = 0; px < 4; ++px ) {
-        for ( int py = 0; py < 4; ++py ) {
-            position_.at(px).at(py) = { position_.at(px).at(py).x,
-                                        position_.at(px).at(py).y + 1 };
-
-            qDebug() << position_.at(px).at(py).x <<position_.at(px).at(py).y;
-        }
-    }
-
-    // Clear the field
-    for ( int x = 0; x < COLUMNS; ++x ) {
-        for ( int y = 0; y < ROWS; ++y ) {
-            if ( field_.at(x).at(y) != 1 ) {
-                continue;
-            } else if ( field_.at(x).at(y) == 1 ) {
-                field_.at(x).at(y) = 0;
-            }
-        }
-    }
-
-    // Re-assign '1' to the new position
-    for ( int x = 0; x < COLUMNS; ++x ) {
-        for ( int y = 0; y < ROWS; ++y ) {
-            for ( int px = 0; px < 4; ++px ) {
-                for ( int py = 0; py < 4; ++py ) {
-                    if ( (x == position_.at(px).at(py).x &&
-                         y == position_.at(px).at(py).y) &&
-                         current_->at(px).at(py) == 1 ) {
-
-                        field_.at(x).at(y) = 1;
-                    }
-                }
-            }
-        }
-    }
+    // Redraw the field after movement
+    draw();
 }
 
 void MainWindow::createBlock(int tetromino) {
