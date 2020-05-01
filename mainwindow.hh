@@ -76,6 +76,11 @@ private:
      */
     void draw();
     /**
+     * @brief finishTetromino
+     * Move a tetromino to be part of the floor
+     */
+    void finishTetromino();
+    /**
      * @brief checkSpace
      * @param d: direction
      * @return 0: free

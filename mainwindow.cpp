@@ -99,12 +99,29 @@ void MainWindow::draw() {
                                         SQUARE_SIDE,
                                         SQUARE_SIDE,
                                         blackPen,
-                                        colours.at(4));
+                                        colours.at(current_shape_));
 
                 graphics_.push_back(square);
             }
         }
     }
+}
+
+void MainWindow::finishTetromino() {
+    for ( int px = 0; px < 4; ++px ) {
+        for ( int py = 0; py < 4; ++py ) {
+            if ( current_->at(px).at(py) == 0 ) {
+                continue;
+            }
+            field_.at(position_.at(px).at(py).x)
+                  .at(position_.at(px).at(py).y) = current_shape_ + 2;
+        }
+    }
+
+    //create_ = true;
+    current_ = nullptr;
+    createBlock(distr(randomEng));
+    if ( DEBUG ) qDebug() << "Tetromino finished " << current_shape_ + 2;
 }
 
 int MainWindow::checkSpace(int d) {
@@ -150,6 +167,10 @@ int MainWindow::checkSpace(int d) {
 }
 
 void MainWindow::moveBlock(int d) {
+    if ( current_ == nullptr ) {
+        return;
+    }
+
     // Default delty x and delta y
     int dx = 0;
     int dy = 0;
@@ -173,7 +194,7 @@ void MainWindow::moveBlock(int d) {
         return;
         break;
     case FLOOR:
-        //finishTetromino();
+        finishTetromino();
         break;
     }
 
@@ -241,9 +262,9 @@ void MainWindow::createBlock(int tetromino) {
 void MainWindow::gameloop() {
     if ( create_ ) {
         create_ = !create_;
-        int first = distr(randomEng);
-        createBlock(first);
+        createBlock(distr(randomEng));
     }
+
     draw();
     moveBlock(DOWN);
 }
