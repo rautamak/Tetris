@@ -38,27 +38,21 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
-
-/*    // Check that Tetrino is created and correct size
-    if ( current_ == nullptr || current_->size() != 4 ) {
-        return;
-    }
-
     if ( event->key() == Qt::Key_Down || event->key() == Qt::Key_S ) {
-        fall_block(true);
+        //fall_block(true);
     }
 
     if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_A ) {
-        move_block(LEFT);
+        moveBlock(LEFT);
     }
 
     if ( event->key() == Qt::Key_Right || event->key() == Qt::Key_D ) {
-        move_block(RIGHT);
+        moveBlock(RIGHT);
     }
 
     if ( event->key() == Qt::Key_Space ) {
-        move_to_bottom();
-    }*/
+        //move_to_bottom();
+    }
 }
 
 void MainWindow::draw() {
@@ -113,10 +107,10 @@ void MainWindow::draw() {
     }
 }
 
-void MainWindow::gravity() {
-    int dy = 1;
+void MainWindow::moveBlock(int d) {
+    int dx = d == RIGHT ? 1 : -1;
 
-    // Add 'gravity' for pieces with id 1 (active)
+    // Move pieces laterally that are id 1 (active)
     for ( int x = 0; x < COLUMNS; ++x ) {
         for ( int y = 0; y < ROWS; ++y ) {
             if ( field_.at(x).at(y) != 1 ) {
@@ -124,8 +118,48 @@ void MainWindow::gravity() {
             } else if ( field_.at(x).at(y) == 1 ) {
                 qDebug() << x << y << ":" << field_.at(x).at(y);
                 field_.at(x).at(y) = 0;
-                field_.at(x).at(y + dy) = 1;
+                field_.at(x + dx).at(y) = 1;
                 break;
+            }
+        }
+    }
+}
+
+void MainWindow::gravity() {
+    int dy = 1;
+
+
+    for ( int px = 0; px < 4; ++px ) {
+        for ( int py = 0; py < 4; ++py ) {
+            position_.at(px).at(py) = { position_.at(px).at(py).x,
+                                      position_.at(px).at(py).y + 1 };
+
+            qDebug() << position_.at(px).at(py).x <<position_.at(px).at(py).y;
+        }
+    }
+
+    // Clear the field
+    for ( int x = 0; x < COLUMNS; ++x ) {
+        for ( int y = 0; y < ROWS; ++y ) {
+            if ( field_.at(x).at(y) != 1 ) {
+                continue;
+            } else if ( field_.at(x).at(y) == 1 ) {
+                field_.at(x).at(y) = 0;
+            }
+        }
+    }
+
+    for ( int x = 0; x < COLUMNS; ++x ) {
+        for ( int y = 0; y < ROWS; ++y ) {
+            for ( int px = 0; px < 4; ++px ) {
+                for ( int py = 0; py < 4; ++py ) {
+                    if ( (x == position_.at(px).at(py).x &&
+                         y == position_.at(px).at(py).y) &&
+                         current_->at(px).at(py) == 1 ) {
+
+                        field_.at(x).at(y) = 1;
+                    }
+                }
             }
         }
     }
@@ -142,8 +176,10 @@ void MainWindow::createBlock(int tetromino) {
 
         for ( int x = 0; x < 4; ++x ) {
             for ( int y = 0; y < 4; ++y ) {
+                position_.at(x).at(y) = { start_x + x, start_y + y };
                 field_.at(start_x + x).at(start_y + y) = shape_1.at(x).at(y);
                 current_shape_ = tetromino;
+                current_ = &shape_1;
             }
         }
 
@@ -183,6 +219,9 @@ void MainWindow::game() {
 
     field_ = std::vector< std::vector< int > >
             (COLUMNS, std::vector< int >(ROWS, 0));
+
+    position_ = std::vector< std::vector< tetromino_pos > >
+            (4, std::vector< tetromino_pos >(4, { 0, 0 }));
 
     // Set up timer and start game loop
     timer_.setSingleShot(false);

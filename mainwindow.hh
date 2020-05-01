@@ -75,6 +75,12 @@ private:
      */
     void draw();
     /**
+     * @brief moveBlock
+     * @param d: direction
+     * Move tetromino sideways
+     */
+    void moveBlock(int d);
+    /**
      * @brief gravity
      */
     void gravity();
@@ -99,7 +105,7 @@ private:
      */
     void game();
 
-    std::vector< std::vector< int > > current_;
+    std::vector< std::vector< int > >* current_;
     int current_shape_;
 
     struct tetromino_pos {
@@ -108,6 +114,8 @@ private:
     };
 
     bool create_ = true;
+
+    std::vector< std::vector< tetromino_pos > > position_;
 
     // Whole game field, initialized with size COLUMNS*ROWS
     // values:
