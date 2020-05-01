@@ -108,13 +108,28 @@ void MainWindow::draw() {
 }
 
 void MainWindow::moveBlock(int d) {
-    int dx = d == RIGHT ? 1 : -1;
+    // Default delty x and delta y
+    int dx = 0;
+    int dy = 0;
+
+
+    switch ( d ) {
+    case LEFT:
+        dx = -1;
+        break;
+    case RIGHT:
+        dx = 1;
+        break;
+    case DOWN:
+        dy = 1;
+        break;
+    }
 
     // Move each piece's coordinates
     for ( int px = 0; px < 4; ++px ) {
         for ( int py = 0; py < 4; ++py ) {
             position_.at(px).at(py) = { position_.at(px).at(py).x + dx,
-                                        position_.at(px).at(py).y };
+                                        position_.at(px).at(py).y + dy };
 
             qDebug() << position_.at(px).at(py).x <<position_.at(px).at(py).y;
         }
@@ -218,7 +233,7 @@ void MainWindow::gameloop() {
         createBlock(first);
     }
     draw();
-    gravity();
+    moveBlock(DOWN);
 }
 
 void MainWindow::drawGrid() {
