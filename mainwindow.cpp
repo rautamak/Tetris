@@ -39,7 +39,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
     if ( event->key() == Qt::Key_Down || event->key() == Qt::Key_S ) {
-        //fall_block(true);
+        fast_ = true;
     }
 
     if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_A ) {
@@ -56,6 +56,12 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
 
     if ( event->key() == Qt::Key_Space ) {
         //move_to_bottom();
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent* event) {
+    if ( event->key() == Qt::Key_Down || event->key() == Qt::Key_S ) {
+        fast_ = false;
     }
 }
 
@@ -283,7 +289,7 @@ void MainWindow::moveBlock(int d) {
         dx = 1;
         break;
     case DOWN:
-        dy = 1;
+        fast_ ? dy = 2 : dy = 1;
         break;
     }
 

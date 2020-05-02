@@ -71,6 +71,11 @@ private:
      */
     void keyPressEvent(QKeyEvent* event);
     /**
+     * @brief keyReleaseEvent
+     * @param event
+     */
+    void keyReleaseEvent(QKeyEvent* event);
+    /**
      * @brief paintEvent
      * @param event
      */
@@ -143,6 +148,9 @@ private:
     };
 
     bool create_ = true;
+
+    // Fast gravity
+    bool fast_ = false;
 
     std::vector< std::vector< tetromino_pos > > position_;
 
