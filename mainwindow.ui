@@ -53,7 +53,7 @@
    <widget class="QPushButton" name="pauseButton">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>370</x>
       <y>590</y>
       <width>90</width>
       <height>28</height>
@@ -61,6 +61,26 @@
     </property>
     <property name="text">
      <string>Pause</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcdTimerS">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>40</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcdTimerM">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>40</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
     </property>
    </widget>
   </widget>

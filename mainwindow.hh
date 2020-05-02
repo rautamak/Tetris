@@ -20,6 +20,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    /**
+     * @brief updateTime
+     */
+    void updateTime();
+
 private:
     bool DEBUG = true;
     Ui::MainWindow *ui;
@@ -190,6 +196,10 @@ private:
 
     bool pause_ = false;
     int points_ = 0;
+
+    QTimer* clock_;
+    int seconds_ = 0;
+    int minutes_ = 0;
 
     std::vector< std::vector< tetromino_pos > > position_;
 

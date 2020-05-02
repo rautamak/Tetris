@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QGraphicsRectItem>
 #include <QMessageBox>
+#include <QTimer>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -33,16 +34,40 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pauseButton, &QPushButton::clicked,
             this, &MainWindow::pauseGame);
 
+    QPalette white = palette();
+    white.setColor(QPalette::Background, Qt::white);
+
+    clock_ = new QTimer(this);
+
+    connect(clock_, SIGNAL(timeout()), this, SLOT(updateTime()));
+
+    ui->lcdTimerS->setAutoFillBackground(true);
+    ui->lcdTimerS->setPalette(white);
+    ui->lcdTimerM->setAutoFillBackground(true);
+    ui->lcdTimerM->setPalette(white);
+
     // Start game
     game();
 }
 
 MainWindow::~MainWindow() {
+    delete clock_;
     delete ui;
 }
 
 void MainWindow::updateUI() {
     ui->pointsLabel->setText(QString::number(points_));
+}
+
+void MainWindow::updateTime() {
+    seconds_++;
+    if ( seconds_ == 60 ) {
+        minutes_++;
+        seconds_ = 0;
+    }
+
+    ui->lcdTimerS->display(seconds_);
+    ui->lcdTimerM->display(minutes_);
 }
 
 void MainWindow::pauseGame() {
@@ -523,9 +548,13 @@ void MainWindow::gameOver() {
     if ( DEBUG ) qDebug() << "Game over";
     pause_ = true;
 
+    clock_->stop();
+
     QMessageBox::StandardButton replay;
-    QString message = QString("You had %1 points. Play again?")
-            .arg(points_);
+    QString message = QString("You got %1 points. Time %2 min and %3 s. "
+                              "Play again?")
+            .arg(points_).arg(minutes_).arg(seconds_);
+
     replay = QMessageBox::question(this, "Game over",
                                    message,
                                    QMessageBox::Yes | QMessageBox::No);
@@ -603,4 +632,5 @@ void MainWindow::game() {
     timer_.setSingleShot(false);
     connect(&timer_, &QTimer::timeout, this, &MainWindow::gameloop);
     timer_.start(300);
+    clock_->start(1000);
 }
