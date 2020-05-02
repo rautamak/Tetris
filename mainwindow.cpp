@@ -3,6 +3,7 @@
 #include <QColor>
 #include <QKeyEvent>
 #include <QGraphicsRectItem>
+#include <QMessageBox>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -37,6 +38,10 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::updateUI() {
+    ui->pointsLabel->setText(QString::number(points_));
+}
+
 void MainWindow::keyPressEvent(QKeyEvent* event) {
     if ( event->key() == Qt::Key_Down || event->key() == Qt::Key_S ) {
         fast_ = true;
@@ -67,6 +72,8 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event) {
 }
 
 void MainWindow::draw() {
+    if ( field_.empty() ) return;
+
     QPen blackPen(Qt::black);
     blackPen.setWidth(2);
 
@@ -168,7 +175,6 @@ void MainWindow::moveToBottom() {
                          field_.at(x).at(y) > 1 ) {
 
                         int candidate_y = y - position_.at(px).at(py).y - 1;
-                        qDebug() << candidate_y;
                         piece_delta_y.push_back(candidate_y);
                     }
                 }
@@ -204,7 +210,7 @@ void MainWindow::rotateTetromino() {
         }
     }
 
-    // Move to right if wall is in way
+    // Move to right/left if wall is in way
     int r = 0;
     int l = 0;
     for( int i = 0; i < 4; i++ ) {
@@ -253,6 +259,9 @@ void MainWindow::clearRow(int row) {
             }
         }
     }
+
+    points_ += 10;
+    updateUI();
 }
 
 bool MainWindow::checkRow(int row) {
@@ -467,25 +476,81 @@ void MainWindow::createBlock(int tetromino) {
     int start_x = 4;
     int start_y = 0;
 
+    switch ( tetromino ) {
+    case HORIZONTAL:
+        start_x = 4;
+        start_y = -2;
+        break;
+    case STEP_UP_RIGHT:
+    case STEP_UP_LEFT:
+    case LEFT_CORNER:
+    case RIGHT_CORNER:
+    case PYRAMID:
+        start_x = 4;
+        start_y = -1;
+        break;
+    }
+
+    start_x = 4;
+    start_y = 0;
+
+    if ( DEBUG ) qDebug() << "Create block " << tetromino;
+
     for ( int x = 0; x < 4; ++x ) {
         for ( int y = 0; y < 4; ++y ) {
             position_.at(x).at(y) = { start_x + x, start_y + y };
-            field_.at(start_x + x).at(start_y + y) = shape_1.at(x).at(y);
+            field_.at(start_x + x).at(start_y + y) = types_.at(tetromino)
+                                                           .at(x).at(y);
             current_shape_ = tetromino;
             current_ = &types_.at(tetromino);
         }
     }
+}
 
+void MainWindow::gameOver() {
+    if ( DEBUG ) qDebug() << "Game over";
+    pause_ = true;
+
+    QMessageBox::StandardButton replay;
+    QString message = QString("You had %1 points. Play again?")
+            .arg(points_);
+    replay = QMessageBox::question(this, "Game over",
+                                   message,
+                                   QMessageBox::Yes | QMessageBox::No);
+
+    if ( replay == QMessageBox::No ) {
+        qApp->exit();
+    }
+
+    if ( replay == QMessageBox::Yes ) {
+        create_ = true;
+        game();
+        draw();
+    }
 }
 
 void MainWindow::gameloop() {
-    if ( create_ ) {
-        create_ = !create_;
-        createBlock(distr(randomEng));
-    }
+    if ( !pause_ ) {
+        if ( create_ ) {
+            create_ = !create_;
+            createBlock(distr(randomEng));
+        }
 
-    draw();
-    moveBlock(DOWN);
+        for ( int x = 0; x < 6; ++x ) {
+            for ( int y = 0; y < 5; ++y ) {
+                // Check if spawn zone is occupied
+                //      -> game over
+
+                if ( field_.at(3 + x).at(0 + y) > 1 ) {
+                    gameOver();
+                    return;
+                }
+            }
+        }
+
+        draw();
+        moveBlock(DOWN);
+    }
 }
 
 void MainWindow::drawGrid() {
@@ -506,7 +571,15 @@ void MainWindow::drawGrid() {
 }
 
 void MainWindow::game() {
+    points_ = 0;
+    field_.clear();
+    position_.clear();
+    current_ = nullptr;
+    pause_ = false;
+    updateUI();
     drawGrid();
+
+    draw();
 
     field_ = std::vector< std::vector< int > >
             (COLUMNS, std::vector< int >(ROWS, 0));
@@ -517,5 +590,5 @@ void MainWindow::game() {
     // Set up timer and start game loop
     timer_.setSingleShot(false);
     connect(&timer_, &QTimer::timeout, this, &MainWindow::gameloop);
-    timer_.start(1000);
+    timer_.start(300);
 }

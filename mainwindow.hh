@@ -63,7 +63,11 @@ private:
 
     // Game timer
     QTimer timer_;
-
+    /**
+     * @brief updateUI
+     * Update the UI elements
+     */
+    void updateUI();
     /**
      * @brief keyPressEvent
      * @param event
@@ -151,6 +155,11 @@ private:
      */
     void drawGrid();
     /**
+     * @brief gameOver
+     * End the game
+     */
+    void gameOver();
+    /**
      * @brief gameloop
      * Main loop of the game
      */
@@ -173,6 +182,9 @@ private:
 
     // Fast gravity
     bool fast_ = false;
+
+    bool pause_ = false;
+    int points_ = 0;
 
     std::vector< std::vector< tetromino_pos > > position_;
 
