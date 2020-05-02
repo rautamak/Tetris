@@ -151,7 +151,6 @@ void MainWindow::clearRow(int row) {
 }
 
 bool MainWindow::checkRow(int row) {
-    if ( DEBUG ) qDebug() << "Checking row " << row;
     for ( int x = 0; x < COLUMNS; ++x ) {
         if ( field_.at(x).at(row) < 2 ) {
             return false;
@@ -204,18 +203,19 @@ int MainWindow::checkSpace(int d) {
 
     for ( int px = 0; px < 4; ++px ) {
         for ( int py = 0; py < 4; ++py ) {
+            if ( current_->at(px).at(py) != 1 ) continue;
+
             // Check for walls
             if ( (position_.at(px).at(py).x + dx >= COLUMNS || // Right wall
-                  position_.at(px).at(py).x + dx < 0) &&       // Left wall
-                  current_->at(px).at(py) == 1 ) {
+                  position_.at(px).at(py).x + dx < 0) ) {      // Left wall
 
                 if ( DEBUG ) qDebug() << "Movement blocked: wall";
                 return WALL;
             }
 
-            if ( position_.at(px).at(py).y + dy >= ROWS &&
-                 field_.at(position_.at(px).at(py).x)
-                       .at(position_.at(px).at(py).y) == 1 ) {
+            qDebug() << position_.at(px).at(py).x;
+
+            if ( position_.at(px).at(py).y + dy >= ROWS ) {
 
                 if ( DEBUG ) qDebug() << "Movement blocked: floor";
                 return FLOOR;
@@ -228,8 +228,7 @@ int MainWindow::checkSpace(int d) {
                  (position_.at(px).at(py).y + dy < ROWS) &&
 
                  (field_.at(position_.at(px).at(py).x + dx)
-                        .at(position_.at(px).at(py).y + dy) > 1 ) &&
-                  current_->at(px).at(py) == 1 ) {
+                        .at(position_.at(px).at(py).y + dy) > 1 ) ) {
 
                 if ( DEBUG ) qDebug() << "Movement blocked: tetromino";
                 return TETROMINO;
