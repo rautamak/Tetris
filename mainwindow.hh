@@ -1,3 +1,12 @@
+/*
+ * Tetris -game
+ * UI class that contains the
+ * Tetris game
+ *
+ * Timi Rautamäki, 284032
+ *
+*/
+
 #ifndef MAINWINDOW_HH
 #define MAINWINDOW_HH
 

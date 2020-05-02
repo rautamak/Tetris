@@ -1,3 +1,13 @@
+/*
+ * Tetris -game
+ * Main class
+ * Starts the UI class that
+ * contains the game
+ *
+ * Timi Rautamäki, 284032
+ *
+*/
+
 #include "mainwindow.hh"
 #include <QApplication>
 

@@ -1,3 +1,12 @@
+/*
+ * Tetris -game
+ * UI class that contains the
+ * Tetris game
+ *
+ * Timi Rautamäki, 284032
+ *
+*/
+
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 #include <QColor>
@@ -335,7 +344,7 @@ void MainWindow::finishTetromino() {
 }
 
 int MainWindow::checkSpace(int d, int r = 1) {
-    // Default delty x and delta y
+    // Default delta x and delta y
     int dx = 0;
     int dy = 0;
 
