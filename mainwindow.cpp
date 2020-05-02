@@ -112,7 +112,7 @@ void MainWindow::draw() {
 }
 
 void MainWindow::rotateTetromino() {
-    if ( current_ == nullptr ) return;
+    if ( current_ == nullptr || current_shape_ == SQUARE ) return;
 
     std::vector< std::vector< int > >* temp =
             new std::vector< std::vector< int > >;
@@ -121,6 +121,18 @@ void MainWindow::rotateTetromino() {
     for( int i = 0; i < 4; i++ ) {
         for( int j = 0; j < 4; j++ ) {
             temp->at(j).at(4 - i - 1) = current_->at(i).at(j);
+        }
+    }
+
+    // Move to right if wall is in way
+    for( int i = 0; i < 4; i++ ) {
+        for( int j = 0; j < 4; j++ ) {
+            qDebug() << position_.at(j).at(0).x;
+            //qDebug() << current_->at(position_.at(j).at(0).x);
+            if ( position_.at(j).at(0).x < 0 &&
+                 current_->at(i).at(j) == 1) {
+                moveBlock(RIGHT);
+            }
         }
     }
 
@@ -213,8 +225,6 @@ int MainWindow::checkSpace(int d) {
                 return WALL;
             }
 
-            qDebug() << position_.at(px).at(py).x;
-
             if ( position_.at(px).at(py).y + dy >= ROWS ) {
 
                 if ( DEBUG ) qDebug() << "Movement blocked: floor";
@@ -299,7 +309,7 @@ void MainWindow::moveBlock(int d) {
             for ( int px = 0; px < 4; ++px ) {
                 for ( int py = 0; py < 4; ++py ) {
                     if ( (x == position_.at(px).at(py).x &&
-                         y == position_.at(px).at(py).y) &&
+                          y == position_.at(px).at(py).y) &&
                          current_->at(px).at(py) == 1 ) {
 
                         field_.at(x).at(y) = 1;
