@@ -5,7 +5,7 @@
  *
  * Timi Rautamäki, 284032
  *
-*/
+ */
 
 #ifndef MAINWINDOW_HH
 #define MAINWINDOW_HH
@@ -37,7 +37,7 @@ private slots:
 
     void on_startButton_clicked();
 
-    void on_exitButton_clicked();
+    void on_scoreBoardButton_clicked();
 
 private:
     bool DEBUG = true;
@@ -45,6 +45,8 @@ private:
 
     QGraphicsScene* scene_;
     QGraphicsScene* next_scene_;
+
+    const std::string FILENAME = "leaders.txt";
 
     // Constants describing scene coordinates
     const int BORDER_UP = 0;
@@ -212,6 +214,8 @@ private:
     std::vector< std::vector< int > >* current_;
     int current_shape_;
     int next_shape_;
+
+    std::string username_ = "anonymous";
 
     struct tetromino_pos {
         int x;

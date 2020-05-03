@@ -5,10 +5,13 @@
  *
  * Timi Rautamäki, 284032
  *
-*/
+ */
 
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
+#include "scoreboard.hh"
+#include <fstream>
+#include <iostream>
 #include <QColor>
 #include <QKeyEvent>
 #include <QGraphicsRectItem>
@@ -95,6 +98,8 @@ void MainWindow::pauseGame() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
+    if ( current_ == nullptr ) return;
+
     if ( event->key() == Qt::Key_Down || event->key() == Qt::Key_S ) {
         fast_ = true;
         moveBlock(DOWN);
@@ -546,6 +551,21 @@ void MainWindow::gameOver() {
 
     clock_->stop();
 
+    std::string score =
+              username_ + ":"
+            + std::to_string(minutes_) + ":"
+            + std::to_string(seconds_) + ":"
+            + std::to_string(points_) + "\n";
+
+    std::ofstream outfile(FILENAME, std::ios_base::app | std::ios_base::out);
+
+    if ( !outfile ) {
+        qDebug() << "Error opening scoreboard";
+    }
+
+    outfile << score;
+    outfile.close();
+
     QMessageBox::StandardButton replay;
     QString message = QString("You got %1 points. Time %2 min and %3 s. "
                               "Play again?")
@@ -648,8 +668,19 @@ void MainWindow::on_startButton_clicked() {
         difficulty_ = INSANE;
     }
 
+    if ( ui->usernameLineEdit->text().toStdString() != "" ) {
+        username_ = ui->usernameLineEdit->text().toStdString();
+    }
+
     ui->startButton->setEnabled(false);
     ui->gameSetupGroupBox->setEnabled(false);
     ui->pauseButton->setEnabled(true);
+
+    ui->graphicsView->setFocus();
     game();
+}
+
+void MainWindow::on_scoreBoardButton_clicked() {
+    ScoreBoard* scoreBoard = new ScoreBoard(FILENAME);
+    scoreBoard->show();
 }

@@ -6,7 +6,7 @@
  *
  * Timi Rautamäki, 284032
  *
-*/
+ */
 
 #include "mainwindow.hh"
 #include <QApplication>

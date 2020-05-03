@@ -105,7 +105,7 @@
      <rect>
       <x>360</x>
       <y>280</y>
-      <width>201</width>
+      <width>231</width>
       <height>221</height>
      </rect>
     </property>
@@ -120,17 +120,17 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="startButton">
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="1">
       <widget class="QRadioButton" name="insaneRadio">
        <property name="text">
         <string>Insane</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Difficulty</string>
        </property>
       </widget>
      </item>
@@ -144,10 +144,20 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QPushButton" name="startButton">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Start</string>
+        <string>Difficulty</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="usernameLineEdit"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Username</string>
        </property>
       </widget>
      </item>
@@ -167,6 +177,19 @@
     </property>
     <property name="text">
      <string>Pause</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="scoreBoardButton">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>600</y>
+      <width>90</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Scoreboard</string>
     </property>
    </widget>
   </widget>
