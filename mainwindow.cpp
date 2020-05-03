@@ -61,8 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lcdTimerM->setAutoFillBackground(true);
     ui->lcdTimerM->setPalette(white);
 
-    // Start game
-    game();
+    drawGrid();
 }
 
 MainWindow::~MainWindow() {
@@ -87,6 +86,11 @@ void MainWindow::updateTime() {
 
 void MainWindow::pauseGame() {
     pause_ = !pause_;
+    if ( pause_ ) {
+        clock_->stop();
+    } else {
+        clock_->start();
+    }
     ui->pauseButton->setText(pause_ ? "Resume" : "Pause");
 }
 
@@ -586,6 +590,14 @@ void MainWindow::gameloop() {
         draw();
         moveBlock(DOWN);
     }
+
+    // Decrease interval by 20ms every 30 seconds
+    // to increase difficulty
+    if ( seconds_ == 30 && difficulty_ > 70 ) {
+        difficulty_ -= 20;
+        timer_.setInterval(difficulty_);
+        if ( DEBUG ) qDebug() << "Change speed to " << difficulty_;
+    }
 }
 
 void MainWindow::drawGrid() {
@@ -612,7 +624,6 @@ void MainWindow::game() {
     current_ = nullptr;
     pause_ = false;
     updateUI();
-    drawGrid();
     draw();
 
     field_ = std::vector< std::vector< int > >
@@ -624,6 +635,21 @@ void MainWindow::game() {
     // Set up timer and start game loop
     timer_.setSingleShot(false);
     connect(&timer_, &QTimer::timeout, this, &MainWindow::gameloop);
-    timer_.start(300);
+    timer_.start(difficulty_);
     clock_->start(1000);
+}
+
+void MainWindow::on_startButton_clicked() {
+    if ( ui->easyRadio->isChecked() ) {
+        difficulty_ = EASY;
+    } else if ( ui->mediumRadio->isChecked() ) {
+        difficulty_ = MEDIUM;
+    } else if ( ui->insaneRadio->isChecked() ) {
+        difficulty_ = INSANE;
+    }
+
+    ui->startButton->setEnabled(false);
+    ui->gameSetupGroupBox->setEnabled(false);
+    ui->pauseButton->setEnabled(true);
+    game();
 }

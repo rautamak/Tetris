@@ -35,6 +35,10 @@ private slots:
      */
     void updateTime();
 
+    void on_startButton_clicked();
+
+    void on_exitButton_clicked();
+
 private:
     bool DEBUG = true;
     Ui::MainWindow *ui;
@@ -61,7 +65,7 @@ private:
     const int LATERAL_SPEED = SQUARE_SIDE;
 
     // Constants for different tetrominos and the number of them
-    enum Tetromino_kind { HORIZONTAL,
+    enum TETROMINO_KIND { HORIZONTAL,
                           LEFT_CORNER,
                           RIGHT_CORNER,
                           SQUARE,
@@ -72,6 +76,14 @@ private:
 
     enum DIRECTIONS { LEFT, RIGHT, DOWN };
     enum OBSTACLE { NONE, WALL, FLOOR, TETROMINO };
+
+    // Difficulty defines the rate at which
+    // tetrominos fall (clock tick delay).
+    enum DIFFICULTY { INSANE = 150,
+                      MEDIUM = 400,
+                      EASY   = 800 };
+
+    int difficulty_ = EASY;
 
     // For randomly selecting the next dropping tetromino
     std::default_random_engine randomEng;
