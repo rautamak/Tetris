@@ -103,6 +103,16 @@
      <string>:</string>
     </property>
    </widget>
+   <widget class="QGraphicsView" name="nextGraphicsView">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>150</y>
+      <width>122</width>
+      <height>102</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

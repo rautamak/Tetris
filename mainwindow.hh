@@ -40,6 +40,7 @@ private:
     Ui::MainWindow *ui;
 
     QGraphicsScene* scene_;
+    QGraphicsScene* next_scene_;
 
     // Constants describing scene coordinates
     const int BORDER_UP = 0;
@@ -104,6 +105,12 @@ private:
      * @param event
      */
     void draw();
+    /**
+     * @brief drawNext
+     * Draw the next tetromino next to
+     * the play field
+     */
+    void drawNext();
     /**
      * @brief allClearBelow
      * @param row
@@ -192,6 +199,7 @@ private:
 
     std::vector< std::vector< int > >* current_;
     int current_shape_;
+    int next_shape_;
 
     struct tetromino_pos {
         int x;
@@ -283,6 +291,17 @@ private:
 
     std::vector< Tetromino > types_ = { shape_1, shape_2, shape_3,
                                         shape_4, shape_5, shape_6, shape_7 };
+
+    // Brushes
+    std::vector< QBrush > colours_ = {
+        QBrush(Qt::cyan),
+        QBrush(Qt::blue),
+        QBrush(QColor("orange")),
+        QBrush(Qt::yellow),
+        QBrush(Qt::green),
+        QBrush(Qt::magenta),
+        QBrush(Qt::red)
+    };
 
     std::vector< QGraphicsRectItem* > graphics_;
 };

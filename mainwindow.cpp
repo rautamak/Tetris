@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // We need a graphics scene in which to draw rectangles.
     scene_ = new QGraphicsScene(this);
+    next_scene_ = new QGraphicsScene(this);
 
     int left_margin = 100; // x coordinate
     int top_margin = 150; // y coordinate
@@ -31,6 +32,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setGeometry(left_margin, top_margin,
                                   BORDER_RIGHT + 2, BORDER_DOWN + 2);
     ui->graphicsView->setScene(scene_);
+
+    ui->nextGraphicsView->setGeometry(2 * left_margin + BORDER_RIGHT,
+                                      top_margin, 6 * SQUARE_SIDE + 2,
+                                      5 * SQUARE_SIDE + 2);
+    ui->nextGraphicsView->setScene(next_scene_);
 
     scene_->setSceneRect(0, 0, BORDER_RIGHT - 1, BORDER_DOWN - 1);
 
@@ -119,17 +125,6 @@ void MainWindow::draw() {
     QPen blackPen(Qt::black);
     blackPen.setWidth(2);
 
-    // Brushes
-    std::vector< QBrush > colours = {
-        QBrush(Qt::cyan),
-        QBrush(Qt::blue),
-        QBrush(QColor("orange")),
-        QBrush(Qt::yellow),
-        QBrush(Qt::green),
-        QBrush(Qt::magenta),
-        QBrush(Qt::red)
-    };
-
     // Remove old graphics
     for ( QGraphicsRectItem* g : graphics_ ) {
         delete g;
@@ -149,7 +144,7 @@ void MainWindow::draw() {
                                         SQUARE_SIDE,
                                         SQUARE_SIDE,
                                         blackPen,
-                                        colours.at(current_shape_));
+                                        colours_.at(current_shape_));
 
                 graphics_.push_back(square);
             } else if ( field_.at(x).at(y) >= 2 ) {
@@ -159,10 +154,28 @@ void MainWindow::draw() {
                                         SQUARE_SIDE,
                                         SQUARE_SIDE,
                                         blackPen,
-                                        colours.at(field_.at(x).at(y) - 2));
+                                        colours_.at(field_.at(x).at(y) - 2));
 
                 graphics_.push_back(square);
             }
+        }
+    }
+}
+
+void MainWindow::drawNext() {
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(2);
+
+    next_scene_->clear();
+
+    std::vector< std::vector< int > >* shape = &types_.at(next_shape_);
+
+    for ( int x = 0; x < 4; ++x ) {
+        for ( int y = 0; y < 4; ++y ) {
+            if ( shape->at(x).at(y) != 1 ) continue;
+            next_scene_->addRect(x*SQUARE_SIDE, y*SQUARE_SIDE,
+                                 SQUARE_SIDE, SQUARE_SIDE,
+                                 blackPen, colours_.at(next_shape_));
         }
     }
 }
@@ -330,9 +343,10 @@ void MainWindow::finishTetromino() {
         }
     }
 
-    //create_ = true;
     current_ = nullptr;
-    createBlock(distr(randomEng));
+    createBlock(next_shape_);
+    next_shape_ = distr(randomEng);
+    drawNext();
     if ( DEBUG ) qDebug() << "Tetromino finished " << current_shape_;
 
     for ( int y = 0; y < ROWS; ++y ) {
@@ -554,6 +568,8 @@ void MainWindow::gameloop() {
     if ( !pause_ ) {
         if ( create_ ) {
             create_ = !create_;
+            next_shape_ = distr(randomEng);
+            drawNext();
             createBlock(distr(randomEng));
         }
 
