@@ -394,7 +394,7 @@ int MainWindow::checkSpace(int d, int r = 1) {
             }
 
             // Check for other blocks
-            if ( (position_.at(px).at(py).x + dx > 0 &&
+            if ( (position_.at(px).at(py).x + dx >= 0 &&
                   position_.at(px).at(py).x + dx < COLUMNS) &&
 
                  (position_.at(px).at(py).y + dy < ROWS) &&
@@ -494,8 +494,6 @@ void MainWindow::moveBlock(int d) {
     // Move each piece's coordinates
     for ( int px = 0; px < 4; ++px ) {
         for ( int py = 0; py < 4; ++py ) {
-            //position_.at(px).at(py) = { position_.at(px).at(py).x + dx,
-            //                            position_.at(px).at(py).y + dy };
 
             setAbsolutePosition(px, py, position_.at(px).at(py).x + dx,
                                         position_.at(px).at(py).y + dy);
@@ -615,7 +613,6 @@ void MainWindow::game() {
     pause_ = false;
     updateUI();
     drawGrid();
-
     draw();
 
     field_ = std::vector< std::vector< int > >
