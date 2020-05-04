@@ -64,6 +64,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lcdTimerM->setAutoFillBackground(true);
     ui->lcdTimerM->setPalette(white);
 
+    // Set selected default difficulty
+    switch (difficulty_) {
+    case EASY:
+        ui->easyRadio->setChecked(true);
+        break;
+    case MEDIUM:
+        ui->mediumRadio->setChecked(true);
+        break;
+    case INSANE:
+        ui->insaneRadio->setChecked(true);
+        break;
+    }
+
     drawGrid();
 }
 
@@ -98,26 +111,27 @@ void MainWindow::pauseGame() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
+
     if ( current_ == nullptr ) return;
 
-    if ( event->key() == Qt::Key_Down || event->key() == Qt::Key_S ) {
+    if ( event->key() == KEY_DOWN ) {
         fast_ = true;
         moveBlock(DOWN);
     }
 
-    if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_A ) {
+    if ( event->key() == KEY_LEFT ) {
         moveBlock(LEFT);
     }
 
-    if ( event->key() == Qt::Key_Right || event->key() == Qt::Key_D ) {
+    if ( event->key() == KEY_RIGHT ) {
         moveBlock(RIGHT);
     }
 
-    if ( event->key() == Qt::Key_Up || event->key() == Qt::Key_W ) {
+    if ( event->key() == KEY_ROTATE ) {
         rotateTetromino();
     }
 
-    if ( event->key() == Qt::Key_Space ) {
+    if ( event->key() == KEY_DROP ) {
         moveToBottom();
     }
 }
@@ -480,14 +494,14 @@ void MainWindow::moveBlock(int d) {
 
     switch ( d ) {
     case LEFT:
-        dx = -1;
+        dx = -LATERAL_SPEED;
         break;
     case RIGHT:
-        dx = 1;
+        dx = LATERAL_SPEED;
         break;
     case DOWN:
-        fast_ ? dy = 2 : dy = 1;
-        fast_ ? r = 2 : r = 1;
+        fast_ ? dy = KEYPRESS_SPEED : dy = SPEED;
+        fast_ ? r = KEYPRESS_SPEED : r = SPEED;
         break;
     }
 
@@ -679,14 +693,14 @@ void MainWindow::game() {
 
 void MainWindow::on_startButton_clicked() {
     if ( ui->easyRadio->isChecked() ) {
-        difficulty_ = speeds.at(EASY);
-        points_per_row_ = points.at(EASY);
+        difficulty_ = difficulties.at(EASY).speed;
+        points_per_row_ = difficulties.at(EASY).points;
     } else if ( ui->mediumRadio->isChecked() ) {
-        difficulty_ = speeds.at(MEDIUM);
-        points_per_row_ = points.at(MEDIUM);
+        difficulty_ = difficulties.at(MEDIUM).speed;
+        points_per_row_ = difficulties.at(MEDIUM).points;
     } else if ( ui->insaneRadio->isChecked() ) {
-        difficulty_ = speeds.at(INSANE);
-        points_per_row_ = points.at(INSANE);
+        difficulty_ = difficulties.at(INSANE).speed;
+        points_per_row_ = difficulties.at(INSANE).points;
     }
 
     if ( ui->usernameLineEdit->text().toStdString() != "" ) {

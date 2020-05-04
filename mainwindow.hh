@@ -48,8 +48,6 @@ private:
     QGraphicsScene* scene_;
     QGraphicsScene* next_scene_;
 
-    std::string FILENAME = "leaders.txt";
-
     // Constants describing scene coordinates
     const int BORDER_UP = 0;
     const int BORDER_DOWN = 480;
@@ -59,14 +57,6 @@ private:
     const int SQUARE_SIDE = 20;
     const int COLUMNS = BORDER_RIGHT / SQUARE_SIDE;
     const int ROWS = BORDER_DOWN / SQUARE_SIDE;
-
-
-    // How much to move a block per frame
-    const int SPEED = SQUARE_SIDE;
-    // How much to move a block on keypress
-    const int KEYPRESS_SPEED = 2 * SPEED;
-    // How much to move a block sideways on keypress
-    const int LATERAL_SPEED = SQUARE_SIDE;
 
     // Constants for different tetrominos and the number of them
     enum TETROMINO_KIND { HORIZONTAL,
@@ -317,6 +307,12 @@ private:
 
     std::vector< QGraphicsRectItem* > graphics_;
 
+    struct DIFFICULTY_CONSTANTS {
+        int difficulty;
+        int points;
+        int speed;
+    };
+
     /*
      *  Game tuneables
      */
@@ -341,20 +337,31 @@ private:
                       MEDIUM,
                       INSANE };
 
-    std::vector< int > speeds = {
-        800,
-        400,
-        150
-    };
-
-    std::vector< int > points = {
-        10,
-        15,
-        25
+    std::vector< DIFFICULTY_CONSTANTS > difficulties = {
+        { EASY, 10, 800 },
+        { MEDIUM, 15, 400 },
+        { INSANE, 25, 150 },
     };
 
     // Default difficulty
-    int difficulty_ = EASY;
+    int difficulty_ = MEDIUM;
+
+    // How much to move a block per frame
+    const int SPEED = 1;
+    // How much to move a block on keypress
+    const int KEYPRESS_SPEED = 2 * SPEED;
+    // How much to move a block sideways on keypress
+    const int LATERAL_SPEED = 1;
+
+    // Key bindings
+    Qt::Key KEY_DOWN = Qt::Key_S;
+    Qt::Key KEY_LEFT = Qt::Key_A;
+    Qt::Key KEY_RIGHT = Qt::Key_D;
+    Qt::Key KEY_ROTATE = Qt::Key_W;
+    Qt::Key KEY_DROP = Qt::Key_Space;
+
+    // Scoreboard file name
+    std::string FILENAME = "leaders.txt";
 };
 
 #endif // MAINWINDOW_HH

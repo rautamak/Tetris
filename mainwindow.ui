@@ -209,6 +209,18 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>usernameLineEdit</tabstop>
+  <tabstop>easyRadio</tabstop>
+  <tabstop>mediumRadio</tabstop>
+  <tabstop>insaneRadio</tabstop>
+  <tabstop>startButton</tabstop>
+  <tabstop>graphicsView</tabstop>
+  <tabstop>pauseButton</tabstop>
+  <tabstop>endGameButton</tabstop>
+  <tabstop>scoreBoardButton</tabstop>
+  <tabstop>nextGraphicsView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
