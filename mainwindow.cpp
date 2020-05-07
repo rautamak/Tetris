@@ -343,7 +343,6 @@ void MainWindow::rotateTetromino() {
                                         position_.at(px).at(py).y);
         }
     }
-    draw();
 }
 
 void MainWindow::clearRow(int row) {
