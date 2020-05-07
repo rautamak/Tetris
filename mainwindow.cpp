@@ -129,6 +129,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
 
     if ( event->key() == KEY_ROTATE ) {
         rotateTetromino();
+        draw();
     }
 
     if ( event->key() == KEY_DROP ) {
@@ -334,6 +335,14 @@ void MainWindow::rotateTetromino() {
     }
 
     current_ = temp;
+
+    // Reset tetromino position and redraw
+    for ( int px = 0; px < 4; ++px ) {
+        for ( int py = 0; py < 4; ++py ) {
+            setAbsolutePosition(px, py, position_.at(px).at(py).x,
+                                        position_.at(px).at(py).y);
+        }
+    }
     draw();
 }
 
@@ -504,7 +513,7 @@ void MainWindow::moveBlock(int d) {
         break;
     case DOWN:
         fast_ ? dy = KEYPRESS_SPEED : dy = SPEED;
-        fast_ ? r = KEYPRESS_SPEED : r = SPEED;
+        r = dy;
         break;
     }
 
@@ -653,15 +662,6 @@ void MainWindow::gameloop() {
         timer_.setInterval(difficulty_);
         if ( DEBUG ) qDebug() << "Change speed to " << difficulty_;
     }
-
-    QDebug deb = qDebug();
-    for ( unsigned int i = 0; i < 4; ++i ) {
-        for ( unsigned int j = 0; j < 4; ++j ) {
-            deb << position_.at(i).at(j).x << ":" << position_.at(i).at(j).y;
-        }
-        deb << "\n";
-    }
-    qDebug();
 }
 
 void MainWindow::drawGrid() {
