@@ -77,6 +77,9 @@ MainWindow::MainWindow(QWidget *parent) :
         break;
     }
 
+    timer_.setSingleShot(false);
+    connect(&timer_, &QTimer::timeout, this, &MainWindow::gameloop);
+
     drawGrid();
 }
 
@@ -101,6 +104,7 @@ void MainWindow::updateTime() {
 }
 
 void MainWindow::pauseGame() {
+    qDebug() << timer_.interval();
     pause_ = !pause_;
     if ( pause_ ) {
         clock_->stop();
@@ -579,6 +583,7 @@ void MainWindow::createBlock(int tetromino) {
         for ( int y = 0; y < 4; ++y ) {
             position_.at(x).at(y) = { start_x + x, start_y + y };
 
+            // To allow the 4*4 to go over the top
             if ( start_y + y < 0 ) continue;
 
             field_.at(start_x + x).at(start_y + y) = current_->at(x).at(y);
@@ -700,8 +705,6 @@ void MainWindow::game() {
             (4, std::vector< tetromino_pos >(4, { 0, 0 }));
 
     // Set up timer and start game loop
-    timer_.setSingleShot(false);
-    connect(&timer_, &QTimer::timeout, this, &MainWindow::gameloop);
     timer_.start(difficulty_);
     clock_->start(1000);
 }
