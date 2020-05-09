@@ -593,8 +593,6 @@ void MainWindow::createBlock(int tetromino) {
         break;
     }
 
-    tetromino = HORIZONTAL;
-
     if ( DEBUG ) qDebug() << "Create block " << tetromino;
 
     current_ = &types_.at(tetromino);
