@@ -326,8 +326,16 @@ void MainWindow::rotateTetromino() {
 
             if ( position_.at(i).at(j).x < 0 ) {
                 r++;
+                if ( checkSpace(RIGHT, r) != 0 ) {
+                    delete temp;
+                    return;
+                }
             } else if ( position_.at(i).at(j).x > COLUMNS - 1 ) {
                 l++;
+                if ( checkSpace(LEFT, l) != 0 ) {
+                    delete temp;
+                    return;
+                }
             } else if ( position_.at(i).at(j).y < 0 ||
                         position_.at(i).at(j).y >= ROWS ||
                         field_.at(position_.at(i).at(j).x)
@@ -584,6 +592,8 @@ void MainWindow::createBlock(int tetromino) {
         start_y = -2;
         break;
     }
+
+    tetromino = HORIZONTAL;
 
     if ( DEBUG ) qDebug() << "Create block " << tetromino;
 
